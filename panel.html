@@ -1,126 +1,52 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <title>Fotoğraf Yükle</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <style>
-    * { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #0f172a, #020617);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-    }
-
-    .card {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(15, 23, 42, 0.9);
-      padding: 32px;
-      border-radius: 18px;
-      box-shadow: 0 30px 80px rgba(0,0,0,.6);
-    }
-
-    h2 {
-      margin: 0 0 6px;
-      text-align: center;
-    }
-
-    p {
-      margin: 0 0 20px;
-      text-align: center;
-      color: #94a3b8;
-      font-size: 14px;
-    }
-
-    input[type="file"] {
-      width: 100%;
-      padding: 12px;
-      border-radius: 12px;
-      border: 1px solid #1e293b;
-      background: #020617;
-      color: #fff;
-    }
-
-    button {
-      margin-top: 14px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      color: #fff;
-    }
-
-    .photos img {
-      width: 100%;
-      margin-top: 12px;
-      border-radius: 12px;
-    }
-  </style>
-</head>
-<body>
-
-<div class="card">
-  <h2 id="welcome"></h2>
-  <p>Fotoğraf yükleyebilirsin</p>
-
-  <input type="file" id="fileInput" accept="image/*">
-  <button id="uploadBtn">Yükle</button>
-
-  <div class="photos" id="photos"></div>
-</div>
-
-<!-- 🔥 FIREBASE (DOĞRU MODÜLER SÜRÜM) -->
 <script type="module">
-  // PANEL KORUMA
-  const rumuz = localStorage.getItem("rumuz");
-  if (!rumuz) location.href = "index.html";
-  document.getElementById("welcome").innerText = rumuz + " hoş geldin";
-
-  // Firebase imports
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-  // 🔧 CONFIG (BURAYI DOLDUR)
-  const firebaseConfig = {
-    apiKey: "API_KEY",
-    authDomain: "xxx.firebaseapp.com",
-    projectId: "xxx",
-    storageBucket: "xxx.appspot.com",
-  };
+  document.addEventListener("DOMContentLoaded", () => {
 
-  // Init
-  const app = initializeApp(firebaseConfig);
-  const storage = getStorage(app);
+    // PANEL KORUMA
+    const rumuz = localStorage.getItem("rumuz");
+    if (!rumuz) {
+      window.location.href = "index.html";
+      return;
+    }
+    document.getElementById("welcome").innerText = rumuz + " hoş geldin";
 
-  // Upload
-  document.getElementById("uploadBtn").addEventListener("click", async () => {
-    const file = document.getElementById("fileInput").files[0];
-    if (!file) return alert("Fotoğraf seç");
+    // 🔧 FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "API_KEY",
+      authDomain: "xxx.firebaseapp.com",
+      projectId: "xxx",
+      storageBucket: "xxx.appspot.com",
+    };
 
-    const fileRef = ref(
-      storage,
-      `photos/${rumuz}_${Date.now()}_${file.name}`
-    );
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
 
-    await uploadBytes(fileRef, file);
-    const url = await getDownloadURL(fileRef);
+    // ✅ BUTON ARTIK GERÇEKTEN ÇALIŞIR
+    document.getElementById("uploadBtn").addEventListener("click", async () => {
+      const fileInput = document.getElementById("fileInput");
+      const file = fileInput.files[0];
 
-    const img = document.createElement("img");
-    img.src = url;
-    document.getElementById("photos").prepend(img);
+      if (!file) {
+        alert("Fotoğraf seç");
+        return;
+      }
+
+      const fileRef = ref(
+        storage,
+        `photos/${rumuz}_${Date.now()}_${file.name}`
+      );
+
+      await uploadBytes(fileRef, file);
+      const url = await getDownloadURL(fileRef);
+
+      const img = document.createElement("img");
+      img.src = url;
+      document.getElementById("photos").prepend(img);
+
+      fileInput.value = "";
+    });
+
   });
 </script>
-
-</body>
-</html>
