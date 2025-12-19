@@ -2,20 +2,24 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Fotoğraf Yükle</title>
+  <title>Panel</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
 </head>
 <body>
 
-  <div class="box">
-    <h2>Fotoğraf Yükle</h2>
+<div class="box">
+  <h2 id="welcome"></h2>
 
-    <input type="file" id="photo" accept="image/*">
-    <button>Yükle</button>
+  <input type="file" id="photo" accept="image/*">
+  <button onclick="uploadPhoto()">Yükle</button>
 
-    <h3>Yüklediğim Fotoğraflar</h3>
-    <div id="photos"></div>
-  </div>
+  <div id="photos"></div>
+</div>
 
+<script src="app.js"></script>
 </body>
 </html>
