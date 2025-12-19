@@ -2,24 +2,125 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Panel</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Fotoğraf Yükle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
+  <style>
+    * { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(15, 23, 42, 0.9);
+      padding: 32px;
+      border-radius: 18px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.6);
+    }
+
+    h2 {
+      margin: 0 0 6px;
+      text-align: center;
+    }
+
+    p {
+      margin: 0 0 20px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #1e293b;
+      background: #020617;
+      color: #fff;
+    }
+
+    button {
+      margin-top: 14px;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+    }
+
+    .photos img {
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 12px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="box">
+<div class="card">
   <h2 id="welcome"></h2>
+  <p>Fotoğraf yükleyebilirsin</p>
 
-  <input type="file" id="photo" accept="image/*">
-  <button onclick="uploadPhoto()">Yükle</button>
+  <input type="file" id="fileInput" accept="image/*">
+  <button id="uploadBtn">Yükle</button>
 
-  <div id="photos"></div>
+  <div class="photos" id="photos"></div>
 </div>
 
-<script src="app.js"></script>
+<!-- 🔥 FIREBASE (DOĞRU MODÜLER SÜRÜM) -->
+<script type="module">
+  // PANEL KORUMA
+  const rumuz = localStorage.getItem("rumuz");
+  if (!rumuz) location.href = "index.html";
+  document.getElementById("welcome").innerText = rumuz + " hoş geldin";
+
+  // Firebase imports
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+  // 🔧 CONFIG (BURAYI DOLDUR)
+  const firebaseConfig = {
+    apiKey: "API_KEY",
+    authDomain: "xxx.firebaseapp.com",
+    projectId: "xxx",
+    storageBucket: "xxx.appspot.com",
+  };
+
+  // Init
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
+
+  // Upload
+  document.getElementById("uploadBtn").addEventListener("click", async () => {
+    const file = document.getElementById("fileInput").files[0];
+    if (!file) return alert("Fotoğraf seç");
+
+    const fileRef = ref(
+      storage,
+      `photos/${rumuz}_${Date.now()}_${file.name}`
+    );
+
+    await uploadBytes(fileRef, file);
+    const url = await getDownloadURL(fileRef);
+
+    const img = document.createElement("img");
+    img.src = url;
+    document.getElementById("photos").prepend(img);
+  });
+</script>
+
 </body>
 </html>
