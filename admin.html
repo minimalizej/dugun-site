@@ -2,26 +2,131 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Admin Giriş</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #111827, #1f2933);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .login-card {
+      background: #0f172a;
+      padding: 40px;
+      width: 100%;
+      max-width: 360px;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      animation: fadeIn 0.6s ease;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 26px;
+      text-align: center;
+    }
+
+    p {
+      margin: 0 0 25px;
+      text-align: center;
+      font-size: 14px;
+      color: #9ca3af;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      margin-bottom: 15px;
+      background: #020617;
+      color: #fff;
+      border: 1px solid #1e293b;
+    }
+
+    input:focus {
+      border-color: #6366f1;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: white;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(99,102,241,0.4);
+    }
+
+    .error {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 14px;
+      color: #f87171;
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="box">
-  <h2>Admin Giriş</h2>
-  <input type="password" id="adminPass" placeholder="Admin şifresi">
-  <button onclick="adminLogin()">Giriş</button>
-</div>
+  <div class="login-card">
+    <h1>Admin Panel</h1>
+    <p>Devam etmek için giriş yap</p>
 
-<div class="box" id="adminPanel" style="display:none">
-  <h2>Yüklenen Fotoğraflar</h2>
-  <div id="photoList"></div>
-</div>
+    <input type="password" id="password" placeholder="Admin şifresi">
+    <button onclick="login()">Giriş Yap</button>
 
-<script src="admin.js"></script>
+    <div class="error" id="error">Hatalı şifre</div>
+  </div>
+
+  <script>
+    const ADMIN_PASSWORD = "1234"; // sonra değiştireceğiz
+
+    function login() {
+      const pass = document.getElementById("password").value;
+      const error = document.getElementById("error");
+
+      if (pass !== ADMIN_PASSWORD) {
+        error.style.display = "block";
+        return;
+      }
+
+      sessionStorage.setItem("admin", "1");
+      window.location.href = "admin-panel.html";
+    }
+  </script>
+
 </body>
 </html>
